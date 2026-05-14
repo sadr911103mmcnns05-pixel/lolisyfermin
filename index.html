@@ -546,33 +546,50 @@ footer .footer-names { font-family: 'Playfair Display', serif; font-style: itali
 </footer>
 
 <script>
-// Cuenta regresiva
+
+// ======================
+// CUENTA REGRESIVA
+// ======================
 function tick() {
   const target = new Date('2026-07-25T12:00:00');
   const now = new Date();
+
   let diff = target - now;
   if (diff < 0) diff = 0;
+
   const d = Math.floor(diff / 86400000);
   const h = Math.floor((diff % 86400000) / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
   const s = Math.floor((diff % 60000) / 1000);
-  document.getElementById('cd-days').textContent  = String(d).padStart(2,'0');
-  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
-  document.getElementById('cd-min').textContent   = String(m).padStart(2,'0');
-  document.getElementById('cd-sec').textContent   = String(s).padStart(2,'0');
-}
-tick(); setInterval(tick, 1000);
 
-// Música
+  document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-min').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-sec').textContent = String(s).padStart(2,'0');
+}
+
+tick();
+setInterval(tick, 1000);
+
+// ======================
+// MÚSICA
+// ======================
 const audio = document.getElementById('bgMusic');
 const label = document.getElementById('musicLabel');
-const eq    = document.getElementById('eqBars');
+const eq = document.getElementById('eqBars');
 let playing = false;
 
 function startMusic() {
   audio.volume = 0.45;
-  audio.play().then(() => { playing = true; eq.classList.add('playing'); label.textContent = 'Pausar'; }).catch(() => {});
+  audio.play()
+    .then(() => {
+      playing = true;
+      eq.classList.add('playing');
+      label.textContent = 'Pausar';
+    })
+    .catch(() => {});
 }
+
 document.addEventListener('click', function firstClick() {
   if (!playing) startMusic();
   document.removeEventListener('click', firstClick);
@@ -580,52 +597,49 @@ document.addEventListener('click', function firstClick() {
 
 function toggleMusic() {
   if (playing) {
-    audio.pause(); playing = false; eq.classList.remove('playing'); label.textContent = 'Música';
+    audio.pause();
+    playing = false;
+    eq.classList.remove('playing');
+    label.textContent = 'Música';
   } else {
     startMusic();
   }
 }
 
-// Reveal scroll
+// ======================
+// REVEAL SCROLL
+// ======================
 const obs = new IntersectionObserver((entries) => {
   entries.forEach((e, i) => {
-    if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 70); obs.unobserve(e.target); }
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 70);
+      obs.unobserve(e.target);
+    }
   });
 }, { threshold: 0.1 });
+
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
+// ======================
 // RSVP
-
+// ======================
 async function handleRSVP() {
 
-  const nombre =
-    document.getElementById("nombre").value.trim();
-
-  const asistentes =
-    document.getElementById("asistentes").value;
-
-  const mensaje =
-    document.getElementById("mensaje").value.trim();
+  const nombre = document.getElementById("nombre").value.trim();
+  const asistentes = document.getElementById("asistentes").value;
+  const mensaje = document.getElementById("mensaje").value.trim();
 
   if (!nombre || !asistentes) {
-
     alert("Completa los campos requeridos");
-
     return;
   }
 
-  const btn =
-    document.querySelector(".btn-confirm");
+  const btn = document.querySelector(".btn-confirm");
 
   btn.disabled = true;
-
   btn.textContent = "Enviando...";
 
-  const data = {
-    nombre,
-    asistentes,
-    mensaje
-  };
+  const data = { nombre, asistentes, mensaje };
 
   try {
 
@@ -642,74 +656,49 @@ async function handleRSVP() {
 
     const result = await response.json();
 
-    console.log(result);
-
     if (result.result === "success") {
 
       alert("¡Asistencia confirmada!");
 
-      btn.textContent =
-        "¡Confirmado! 🥂";
+      // ======================
+      // WHATSAPP
+      // ======================
+      const phone = "5217225109677";
 
-      btn.style.background =
-        "#6b8f71";
+      const text =
+        `Hola 👋, confirmo mi asistencia a la boda:\n` +
+        `Nombre: ${nombre}\n` +
+        `Asistentes: ${asistentes}\n` +
+        `Mensaje: ${mensaje}`;
+
+      const url =
+        `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+
+      window.open(url, "_blank");
+
+      // UI feedback
+      btn.textContent = "¡Confirmado! 🥂";
+      btn.style.background = "#6b8f71";
 
       document.getElementById("nombre").value = "";
       document.getElementById("asistentes").value = "";
       document.getElementById("mensaje").value = "";
 
     } else {
-
       alert("Error: " + result.message);
-
       btn.disabled = false;
-
-      btn.textContent =
-        "Confirmar asistencia";
+      btn.textContent = "Confirmar asistencia";
     }
 
   } catch (error) {
 
     console.error(error);
 
-    alert(
-      "Error de conexión con Google Sheets"
-    );
+    alert("Error de conexión con Google Sheets");
 
     btn.disabled = false;
-
-if (result.result === "success") {
-
-  alert("¡Asistencia confirmada!");
-
-  if (result.result === "success") {
-
-  alert("¡Asistencia confirmada!");
-
-  // 👇 WHATSAPP AUTOMÁTICO
-  const phone = "5217225109677"; // México: 52 + número (importante)
-  
-  const text =
-    `Hola 👋, confirmo mi asistencia a la boda:\n` +
-    `Nombre: ${nombre}\n` +
-    `Asistentes: ${asistentes}\n` +
-    `Mensaje: ${mensaje}`;
-
-  const url =
-    `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
-
-  window.open(url, "_blank");
-
-  // UI feedback
-  btn.textContent = "¡Confirmado! 🥂";
-  btn.style.background = "#6b8f71";
-
-  document.getElementById("nombre").value = "";
-  document.getElementById("asistentes").value = "";
-  document.getElementById("mensaje").value = "";
-}
+    btn.textContent = "Confirmar asistencia";
   }
-
 }
 
 </script>
