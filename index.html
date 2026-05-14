@@ -678,8 +678,30 @@ async function handleRSVP() {
 
     btn.disabled = false;
 
-    btn.textContent =
-      "Confirmar asistencia";
+if (result.result === "success") {
+
+  alert("¡Asistencia confirmada!");
+
+  // 👇 AQUÍ VA WHATSAPP
+  const phone = "7225109677"; // cambia a tu número
+  const text =
+    `Hola 👋, confirmo mi asistencia a la boda:\n` +
+    `Nombre: ${nombre}\n` +
+    `Asistentes: ${asistentes}\n` +
+    `Mensaje: ${mensaje}`;
+
+  const url =
+    `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+
+  window.open(url, "_blank");
+
+  // UI feedback
+  btn.textContent = "¡Confirmado! 🥂";
+  btn.style.background = "#6b8f71";
+
+  document.getElementById("nombre").value = "";
+  document.getElementById("asistentes").value = "";
+  document.getElementById("mensaje").value = "";
   }
 
 }
