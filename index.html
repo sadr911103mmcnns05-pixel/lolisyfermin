@@ -463,7 +463,6 @@ footer .footer-names { font-family: 'Playfair Display', serif; font-style: itali
 
 <!-- RSVP -->
 <section id="rsvp">
- <section id="rsvp">
 
   <p class="section-label reveal">
     Confirmación de asistencia
@@ -537,7 +536,6 @@ footer .footer-names { font-family: 'Playfair Display', serif; font-style: itali
   </div>
 
 </section>
-</section>
 
 <!-- FOOTER -->
 <footer>
@@ -597,26 +595,18 @@ const obs = new IntersectionObserver((entries) => {
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
 // RSVP
-function handleRSVP() {
-  const name = document.querySelector('#rsvp input[type="text"]').value.trim();
-  if (!name) { alert('Por favor ingresa tu nombre.'); return; }
-  const btn = document.querySelector('.btn-confirm');
-  btn.textContent = '¡Asistencia confirmada! 🥂';
-  btn.style.background = '#6b8f71';
-  btn.disabled = true;
-}
-
+<script>
 
 async function handleRSVP() {
 
   const nombre =
-    document.getElementById("nombre").value;
+    document.getElementById("nombre").value.trim();
 
   const asistentes =
     document.getElementById("asistentes").value;
 
   const mensaje =
-    document.getElementById("mensaje").value;
+    document.getElementById("mensaje").value.trim();
 
   if (!nombre || !asistentes) {
 
@@ -624,6 +614,13 @@ async function handleRSVP() {
 
     return;
   }
+
+  const btn =
+    document.querySelector(".btn-confirm");
+
+  btn.disabled = true;
+
+  btn.textContent = "Enviando...";
 
   const data = {
     nombre,
@@ -637,15 +634,26 @@ async function handleRSVP() {
       "https://script.google.com/a/macros/soycecytem.mx/s/AKfycbx4H9aJTIRB0j5_KZ3yJPCRN4hvp4C-bJBCnVINBBo1_96SCHMnzuJ_YmAoG209fQZ9/exec",
       {
         method: "POST",
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        }
       }
     );
 
     const result = await response.json();
 
+    console.log(result);
+
     if (result.result === "success") {
 
       alert("¡Asistencia confirmada!");
+
+      btn.textContent =
+        "¡Confirmado! 🥂";
+
+      btn.style.background =
+        "#6b8f71";
 
       document.getElementById("nombre").value = "";
       document.getElementById("asistentes").value = "";
@@ -653,20 +661,31 @@ async function handleRSVP() {
 
     } else {
 
-      alert("Error al guardar");
+      alert("Error: " + result.message);
 
+      btn.disabled = false;
+
+      btn.textContent =
+        "Confirmar asistencia";
     }
 
   } catch (error) {
 
     console.error(error);
 
-    alert("Error de conexión");
+    alert(
+      "Error de conexión con Google Sheets"
+    );
 
+    btn.disabled = false;
+
+    btn.textContent =
+      "Confirmar asistencia";
   }
 
 }
 
+</script>
 </script>
 </body>
 </html>
