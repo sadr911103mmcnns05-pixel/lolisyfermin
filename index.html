@@ -622,7 +622,6 @@ document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
 // ======================
 // RSVP
-// ======================
 async function handleRSVP() {
 
   const nombre = document.getElementById("nombre").value.trim();
@@ -656,14 +655,16 @@ async function handleRSVP() {
 
     const result = await response.json();
 
+    console.log(result);
+
     if (result.result === "success") {
 
       alert("¡Asistencia confirmada!");
 
       // ======================
-      // WHATSAPP
+      // WHATSAPP AUTOMÁTICO
       // ======================
-      const phone = "5217225109677";
+      const phone = "5217225109677"; // México (52 + número)
 
       const text =
         `Hola 👋, confirmo mi asistencia a la boda:\n` +
@@ -685,7 +686,9 @@ async function handleRSVP() {
       document.getElementById("mensaje").value = "";
 
     } else {
+
       alert("Error: " + result.message);
+
       btn.disabled = false;
       btn.textContent = "Confirmar asistencia";
     }
@@ -700,6 +703,8 @@ async function handleRSVP() {
     btn.textContent = "Confirmar asistencia";
   }
 }
+
+
 
 </script>
 
