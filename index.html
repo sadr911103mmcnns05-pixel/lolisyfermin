@@ -463,26 +463,80 @@ footer .footer-names { font-family: 'Playfair Display', serif; font-style: itali
 
 <!-- RSVP -->
 <section id="rsvp">
-  <p class="section-label reveal">Confirmación de asistencia</p>
-  <h2 class="reveal">¿Nos acompañarás?</h2>
-  <div class="divider reveal"><span class="divider-icon">✦ ✦ ✦</span></div>
-  <p class="lead reveal">Por favor confirma tu asistencia a más tardar el <strong style="color:var(--gold-dark)">10 de julio de 2026</strong>.</p>
+ <section id="rsvp">
+
+  <p class="section-label reveal">
+    Confirmación de asistencia
+  </p>
+
+  <h2 class="reveal">
+    ¿Nos acompañarás?
+  </h2>
+
+  <div class="divider reveal">
+    <span class="divider-icon">✦ ✦ ✦</span>
+  </div>
+
+  <p class="lead reveal">
+    Por favor confirma tu asistencia a más tardar el
+    <strong style="color:var(--gold-dark)">
+      10 de julio de 2026
+    </strong>.
+  </p>
 
   <div class="rsvp-form reveal">
+
     <div class="form-group">
-      <label class="form-label">Nombre completo</label>
-      <input class="form-input" type="text" placeholder="Tu nombre completo">
+      <label class="form-label">
+        Nombre completo
+      </label>
+
+      <input
+        id="nombre"
+        class="form-input"
+        type="text"
+        placeholder="Tu nombre completo"
+      >
     </div>
+
     <div class="form-group">
-      <label class="form-label">Número de asistentes</label>
-      <input class="form-input" type="number" placeholder="1" min="1" max="8">
+      <label class="form-label">
+        Número de asistentes
+      </label>
+
+      <input
+        id="asistentes"
+        class="form-input"
+        type="number"
+        placeholder="1"
+        min="1"
+        max="8"
+      >
     </div>
+
     <div class="form-group">
-      <label class="form-label">Mensaje para los novios (opcional)</label>
-      <textarea class="form-input" rows="3" placeholder="Un deseo, una bendición..."></textarea>
+      <label class="form-label">
+        Mensaje para los novios (opcional)
+      </label>
+
+      <textarea
+        id="mensaje"
+        class="form-input"
+        rows="3"
+        placeholder="Un deseo, una bendición..."
+      ></textarea>
     </div>
-    <button class="btn-confirm" onclick="handleRSVP()">Confirmar asistencia</button>
+
+    <button
+      class="btn-confirm"
+      onclick="handleRSVP()"
+    >
+      Confirmar asistencia
+    </button>
+
   </div>
+
+</section>
 </section>
 
 <!-- FOOTER -->
@@ -551,6 +605,69 @@ function handleRSVP() {
   btn.style.background = '#6b8f71';
   btn.disabled = true;
 }
+</script>
+  <script>
+
+async function handleRSVP() {
+
+  const nombre =
+    document.getElementById("nombre").value;
+
+  const asistentes =
+    document.getElementById("asistentes").value;
+
+  const mensaje =
+    document.getElementById("mensaje").value;
+
+  if (!nombre || !asistentes) {
+
+    alert("Completa los campos requeridos");
+
+    return;
+  }
+
+  const data = {
+    nombre,
+    asistentes,
+    mensaje
+  };
+
+  try {
+
+    const response = await fetch(
+      "https://script.google.com/a/macros/soycecytem.mx/s/AKfycbwj8vCgsxACiDgxusVbUleF_V3M-nE5cbw4znwrMQ7WAukNe-lRTVGk9TSWX3klqOeQ/exec",
+      {
+        method: "POST",
+        body: JSON.stringify(data)
+      }
+    );
+
+    const result = await response.json();
+
+    if (result.result === "success") {
+
+      alert("¡Asistencia confirmada!");
+
+      document.getElementById("nombre").value = "";
+      document.getElementById("asistentes").value = "";
+      document.getElementById("mensaje").value = "";
+
+    } else {
+
+      alert("Error al guardar");
+
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert("Error de conexión");
+
+  }
+
+}
+
 </script>
 </body>
 </html>
