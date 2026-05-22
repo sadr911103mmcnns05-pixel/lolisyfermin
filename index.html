@@ -333,37 +333,83 @@ setInterval(tick, 1000);
 // ======================
 // MÚSICA
 // ======================
+
 const audio = document.getElementById('bgMusic');
 const label = document.getElementById('musicLabel');
 const eq = document.getElementById('eqBars');
+const musicBar = document.getElementById('music-bar');
+
 let playing = false;
 
-function startMusic() {
-  audio.volume = 0.45;
-  audio.play()
-    .then(() => {
-      playing = true;
-      eq.classList.add('playing');
-      label.textContent = 'Pausar';
-    })
-    .catch(() => {});
-}
+// Configuración para móviles
+audio.volume = 0.45;
+audio.loop = true;
+audio.playsInline = true;
 
-document.addEventListener('click', function firstClick() {
-  if (!playing) startMusic();
-  document.removeEventListener('click', firstClick);
-}, { once: true });
+// Iniciar música
+async function startMusic() {
 
-function toggleMusic() {
-  if (playing) {
-    audio.pause();
-    playing = false;
-    eq.classList.remove('playing');
-    label.textContent = 'Música';
-  } else {
-    startMusic();
+  try {
+
+    await audio.play();
+
+    playing = true;
+
+    eq.classList.add('playing');
+
+    label.textContent = 'Pausar';
+
+  } catch (err) {
+
+    console.log('El navegador bloqueó el audio:', err);
+
   }
 }
+
+// Pausar música
+function pauseMusic() {
+
+  audio.pause();
+
+  playing = false;
+
+  eq.classList.remove('playing');
+
+  label.textContent = 'Música';
+}
+
+// Toggle
+function toggleMusic() {
+
+  if (playing) {
+
+    pauseMusic();
+
+  } else {
+
+    startMusic();
+
+  }
+}
+
+// Click en el botón
+musicBar.addEventListener('click', toggleMusic);
+
+// Primer toque en móvil para desbloquear audio
+document.addEventListener('touchstart', () => {
+
+  audio.load();
+
+}, { once: true });
+
+// Autoplay después de la primera interacción
+document.addEventListener('click', () => {
+
+  if (!playing) {
+    startMusic();
+  }
+
+}, { once: true });
 
 // ======================
 // REVEAL SCROLL
